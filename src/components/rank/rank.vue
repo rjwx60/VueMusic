@@ -2,12 +2,15 @@
   <div class="rank" ref="rank">
     <scroll :data="topList" class="toplist" ref="toplist">
       <ul>
-        <li @click="selectItem(item)" class="item" v-for="item in topList">
+        <!-- 列表项 -->
+        <li @click="selectItem(item)" class="item" v-for="(item, index) in topList" :key="index">
           <div class="icon">
+            <!-- v-lazy -->
             <img width="100" height="100" v-lazy="item.picUrl"/>
           </div>
+          <!-- 内部展示项 -->
           <ul class="songlist">
-            <li class="song" v-for="(song,index) in item.songList">
+            <li class="song" v-for="(song,index) in item.songList" :key="index">
               <span>{{index + 1}}</span>
               <span>{{song.songname}}-{{song.singername}}</span>
             </li>
@@ -23,16 +26,23 @@
 </template>
 
 <script type="text/ecmascript-6">
+  // 通用组件
   import Scroll from 'base/scroll/scroll'
+  // 友好提示
   import Loading from 'base/loading/loading'
+  // 数据获取
   import {getTopList} from 'api/rank'
+  // 静态文件
   import {ERR_OK} from 'api/config'
+  // Mixin
   import {playlistMixin} from 'common/js/mixin'
+  // Vuex
   import {mapMutations} from 'vuex'
 
   export default {
     mixins: [playlistMixin],
     created() {
+      // 数据获取
       this._getTopList()
     },
     data() {
@@ -41,16 +51,18 @@
       }
     },
     methods: {
+      // 播放栏
       handlePlaylist(playlist) {
         const bottom = playlist.length > 0 ? '60px' : ''
-
         this.$refs.rank.style.bottom = bottom
         this.$refs.toplist.refresh()
       },
+      // 跳转到 TopList
       selectItem(item) {
         this.$router.push({
           path: `/rank/${item.id}`
         })
+        // topList
         this.setTopList(item)
       },
       _getTopList() {

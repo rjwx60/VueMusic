@@ -36,6 +36,7 @@
       this._getMusicList()
     },
     methods: {
+      // 数据获取和处理
       _getMusicList() {
         if (!this.topList.id) {
           this.$router.push('/rank')

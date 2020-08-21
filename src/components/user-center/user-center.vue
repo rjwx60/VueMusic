@@ -1,16 +1,23 @@
 <template>
   <transition name="slide">
     <div class="user-center">
+      <!-- 回退 -->
       <div class="back" @click="back">
         <i class="icon-back"></i>
       </div>
+
+      <!-- 切换按钮 -->
       <div class="switches-wrapper">
         <switches @switch="switchItem" :switches="switches" :currentIndex="currentIndex"></switches>
       </div>
+
+      <!-- 随机播放 -->
       <div ref="playBtn" class="play-btn" @click="random">
         <i class="icon-play"></i>
         <span class="text">随机播放全部</span>
       </div>
+
+      <!-- 有结果 -->
       <div class="list-wrapper" ref="listWrapper">
         <scroll ref="favoriteList" class="list-scroll" v-if="currentIndex===0" :data="favoriteList">
           <div class="list-inner">
@@ -23,6 +30,8 @@
           </div>
         </scroll>
       </div>
+
+      <!-- 无结果 -->
       <div class="no-result-wrapper" v-show="noResult">
         <no-result :title="noResultDesc"></no-result>
       </div>
@@ -74,6 +83,7 @@
       ])
     },
     methods: {
+      // 播放工具
       handlePlaylist(playlist) {
         const bottom = playlist.length > 0 ? '60px' : ''
         this.$refs.listWrapper.style.bottom = bottom
