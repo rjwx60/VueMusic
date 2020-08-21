@@ -21,6 +21,7 @@ export const playlistMixin = {
   },
   methods: {
     handlePlaylist() {
+      // mixin 用于继承
       throw new Error('component must implement handlePlaylist method')
     }
   }

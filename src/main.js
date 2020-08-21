@@ -1,10 +1,14 @@
 import 'babel-polyfill'
+
+// 将 MessageChannel 与 setImmediate 禁用
+// 以避免升级 vue2.5x+ 后导致的问题
+// 详看: https://juejin.im/post/6844903516822044680
 import 'common/js/hack'
 
-
-// 三方插件
 import Vue from 'vue'
 import App from './App'
+
+// 三方插件
 import fastclick from 'fastclick'
 import VueLazyload from 'vue-lazyload'
 
@@ -19,6 +23,7 @@ import { SET_PLAY_HISTORY, SET_FAVORITE_LIST } from './store/mutation-types'
 import { loadPlay, loadFavorite } from 'common/js/cache'
 import { processSongsUrl } from 'common/js/song'
 
+// css style
 import 'common/stylus/index.styl'
 
 /* eslint-disable no-unused-vars */
@@ -46,7 +51,7 @@ processSongsUrl(favoriteSongs).then((songs) => {
   store.commit(SET_FAVORITE_LIST, songs)
 })
 
-
+// 初始化
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

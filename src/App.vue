@@ -1,10 +1,13 @@
 <template>
   <div id="app" @touchmove.prevent>
+    <!-- 顶部栏 -->
     <m-header></m-header>
+    <!-- 导航栏控制路由与展示 -->
     <tab></tab>
     <keep-alive>
       <router-view></router-view>
     </keep-alive>
+    <!-- 音乐播放界面 -->
     <player></player>
   </div>
 </template>

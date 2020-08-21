@@ -5,7 +5,7 @@
       </slot>
     </div>
     <div class="dots">
-      <span class="dot" :class="{active: currentPageIndex === index }" v-for="(item, index) in dots"></span>
+      <span class="dot" :class="{active: currentPageIndex === index }" v-for="(item, index) in dots" :key="index"></span>
     </div>
   </div>
 </template>
@@ -40,25 +40,21 @@
       setTimeout(() => {
         this._setSliderWidth()
         this._initDots()
+        // 初始化 BS 插件
         this._initSlider()
 
-        if (this.autoPlay) {
-          this._play()
-        }
+        if (this.autoPlay) this._play();
       }, 20)
 
       window.addEventListener('resize', () => {
-        if (!this.slider || !this.slider.enabled) {
-          return
-        }
+        if (!this.slider || !this.slider.enabled) return;
+
         clearTimeout(this.resizeTimer)
         this.resizeTimer = setTimeout(() => {
           if (this.slider.isInTransition) {
             this._onScrollEnd()
           } else {
-            if (this.autoPlay) {
-              this._play()
-            }
+            if (this.autoPlay) this._play();
           }
           this.refresh()
         }, 60)
