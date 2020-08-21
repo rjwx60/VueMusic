@@ -84,7 +84,7 @@
       }, 20)
     },
     methods: {
-      // 根据 playlist 的有无定义底部栏
+      // 播放栏占位
       handlePlaylist(playlist) {
         const bottom = playlist.length > 0 ? '60px' : ''
         this.$refs.recommend.style.bottom = bottom

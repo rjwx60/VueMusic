@@ -1,11 +1,14 @@
 <template>
   <div class="music-list">
-    <div class="back" @click="back">
-      <i class="icon-back"></i>
-    </div>
+    <!-- 回退 -->
+    <div class="back" @click="back"><i class="icon-back"></i></div>
+    <!-- 标题 -->
     <h1 class="title" v-html="title"></h1>
+
+    <!-- 封面背景 -->
     <div class="bg-image" :style="bgStyle" ref="bgImage">
       <div class="play-wrapper">
+        <!-- 随机播放按钮 -->
         <div ref="playBtn" v-show="songs.length>0" class="play" @click="random">
           <i class="icon-play"></i>
           <span class="text">随机播放全部</span>
@@ -13,30 +16,36 @@
       </div>
       <div class="filter" ref="filter"></div>
     </div>
+
     <div class="bg-layer" ref="layer"></div>
-    <scroll :data="songs" @scroll="scroll"
-            :listen-scroll="listenScroll" :probe-type="probeType" class="list" ref="list">
+
+    <!-- 列表 -->
+    <scroll :data="songs" @scroll="scroll" :listen-scroll="listenScroll" :probe-type="probeType" class="list" ref="list">
       <div class="song-list-wrapper">
+        <!-- 列表项 -->
         <song-list :songs="songs" :rank="rank" @select="selectItem"></song-list>
       </div>
-      <div v-show="!songs.length" class="loading-container">
-        <loading></loading>
-      </div>
+      <div v-show="!songs.length" class="loading-container"><loading></loading></div>
     </scroll>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  // 滚动组件
   import Scroll from 'base/scroll/scroll'
+  // 友好提示
   import Loading from 'base/loading/loading'
+  // 通用组件
   import SongList from 'base/song-list/song-list'
+  // 工具函数
   import {prefixStyle} from 'common/js/dom'
   import {playlistMixin} from 'common/js/mixin'
-  import {mapActions} from 'vuex'
-
-  const RESERVED_HEIGHT = 40
-  const transform = prefixStyle('transform')
   const backdrop = prefixStyle('backdrop-filter')
+  const transform = prefixStyle('transform')
+  // Vuex
+  import {mapActions} from 'vuex'
+  // 常量
+  const RESERVED_HEIGHT = 40
 
   export default {
     mixins: [playlistMixin],
@@ -64,6 +73,7 @@
       }
     },
     computed: {
+      // return bgStyle
       bgStyle() {
         return `background-image:url(${this.bgImage})`
       }
@@ -78,34 +88,42 @@
       this.$refs.list.$el.style.top = `${this.imageHeight}px`
     },
     methods: {
+      // 处理底部
       handlePlaylist(playlist) {
         const bottom = playlist.length > 0 ? '60px' : ''
         this.$refs.list.$el.style.bottom = bottom
         this.$refs.list.refresh()
       },
+      // 闭包获取滚动数值
       scroll(pos) {
         this.scrollY = pos.y
       },
+      // 回退
       back() {
         this.$router.back()
       },
+      // 选择则触发方法 - vuex
       selectItem(item, index) {
         this.selectPlay({
           list: this.songs,
           index
         })
       },
+      // 触发随机播放方法 - vuex
       random() {
         this.randomPlay({
           list: this.songs
         })
       },
+      // 触发方法
       ...mapActions([
         'selectPlay',
         'randomPlay'
       ])
     },
     watch: {
+      // 下拉放大效果
+      // 核心: 根据下拉值转化 scale - translate3d transform 和限定值 minTransalteY
       scrollY(newVal) {
         let translateY = Math.max(this.minTransalteY, newVal)
         let scale = 1
@@ -119,8 +137,11 @@
           blur = Math.min(20, percent * 20)
         }
 
+        // 上移则跟随(睡鼠标)上移
         this.$refs.layer.style[transform] = `translate3d(0,${translateY}px,0)`
         this.$refs.filter.style[backdrop] = `blur(${blur}px)`
+
+        // 实现下拉效果
         if (newVal < this.minTransalteY) {
           zIndex = 10
           this.$refs.bgImage.style.paddingTop = 0

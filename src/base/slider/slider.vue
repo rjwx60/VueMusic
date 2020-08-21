@@ -37,15 +37,18 @@
       }
     },
     mounted() {
+      // 确保 DOM 可获取
       setTimeout(() => {
         this._setSliderWidth()
         this._initDots()
         // 初始化 BS 插件
         this._initSlider()
-
-        if (this.autoPlay) this._play();
+        if (this.autoPlay) {
+          this._play()
+        }
       }, 20)
 
+      // 每当检测屏幕变化则触发更新
       window.addEventListener('resize', () => {
         if (!this.slider || !this.slider.enabled) return;
 
@@ -54,7 +57,9 @@
           if (this.slider.isInTransition) {
             this._onScrollEnd()
           } else {
-            if (this.autoPlay) this._play();
+            if (this.autoPlay) {
+              this._play()
+            }
           }
           this.refresh()
         }, 60)
@@ -80,11 +85,13 @@
     methods: {
       refresh() {
         if (this.slider) {
+          // 重新设置宽度
           this._setSliderWidth(true)
           this.slider.refresh()
         }
       },
       _setSliderWidth(isResize) {
+        // 获取滚动子元素
         this.children = this.$refs.sliderGroup.children
 
         let width = 0
@@ -101,6 +108,7 @@
         }
         this.$refs.sliderGroup.style.width = width + 'px'
       },
+      // 初始化 BS 插件
       _initSlider() {
         this.slider = new BScroll(this.$refs.slider, {
           scrollX: true,

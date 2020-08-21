@@ -1,4 +1,5 @@
 <template>
+  <!-- 本质还是使用 music-list -->
   <transition name="slide">
     <music-list :title="title" :bg-image="bgImage" :songs="songs"></music-list>
   </transition>
@@ -32,6 +33,7 @@
       this._getDetail()
     },
     methods: {
+      // 数据获取 - 主要是返回的数据结构一样
       _getDetail() {
         if (!this.singer.id) {
           this.$router.push('/singer')

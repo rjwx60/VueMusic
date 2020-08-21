@@ -6,11 +6,17 @@
 </template>
 
 <script type="text/ecmascript-6">
+  // 通用组件
   import ListView from 'base/listview/listview'
+  // 数据获取
   import {getSingerList} from 'api/singer'
+  // 静态文件
   import {ERR_OK} from 'api/config'
+  // 静态对象
   import Singer from 'common/js/singer'
+  // Vuex
   import {mapMutations} from 'vuex'
+  // Mixin
   import {playlistMixin} from 'common/js/mixin'
 
   const HOT_SINGER_LEN = 10
@@ -23,21 +29,25 @@
         singers: []
       }
     },
+    // 生命周期驱动
     created() {
       this._getSingerList()
     },
     methods: {
+      // 播放栏占位
       handlePlaylist(playlist) {
         const bottom = playlist.length > 0 ? '60px' : ''
         this.$refs.singer.style.bottom = bottom
         this.$refs.list.refresh()
       },
+      // 跳转
       selectSinger(singer) {
         this.$router.push({
           path: `/singer/${singer.id}`
         })
         this.setSinger(singer)
       },
+      // 数据获取
       _getSingerList() {
         getSingerList().then((res) => {
           if (res.code === ERR_OK) {
@@ -45,6 +55,7 @@
           }
         })
       },
+      // 数据处理
       _normalizeSinger(list) {
         let map = {
           hot: {
@@ -71,7 +82,7 @@
             id: item.Fsinger_mid
           }))
         })
-        // 为了得到有序列表，我们需要处理 map
+        // 为了得到有序列表，而需要处理 map
         let ret = []
         let hot = []
         for (let key in map) {
@@ -85,8 +96,10 @@
         ret.sort((a, b) => {
           return a.title.charCodeAt(0) - b.title.charCodeAt(0)
         })
+        // 热门 + 排序列表
         return hot.concat(ret)
       },
+      // vuex
       ...mapMutations({
         setSinger: 'SET_SINGER'
       })

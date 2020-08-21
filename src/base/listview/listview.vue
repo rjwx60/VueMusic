@@ -6,20 +6,28 @@
           class="listview"
           ref="listview">
     <ul>
-      <li v-for="group in data" class="list-group" ref="listGroup">
+      <!-- 列表项 -->
+      <li v-for="(group, index) in data" :key="index" class="list-group" ref="listGroup">
+        <!-- 列表项标题 -->
         <h2 class="list-group-title">{{group.title}}</h2>
+        <!-- 列表项子项 -->
         <uL>
-          <li @click="selectItem(item)" v-for="item in group.items" class="list-group-item">
+          <li @click="selectItem(item)" v-for="(item, index) in group.items" :key="index" class="list-group-item">
+            <!-- v-lazy 懒加载 -->
             <img class="avatar" v-lazy="item.avatar">
             <span class="name">{{item.name}}</span>
           </li>
         </uL>
       </li>
     </ul>
-    <div class="list-shortcut" @touchstart.stop.prevent="onShortcutTouchStart" @touchmove.stop.prevent="onShortcutTouchMove"
-         @touchend.stop>
+
+    <!-- 快捷搜索 -->
+    <div class="list-shortcut"
+      @touchstart.stop.prevent="onShortcutTouchStart"
+      @touchmove.stop.prevent="onShortcutTouchMove"
+     @touchend.stop>
       <ul>
-        <li v-for="(item, index) in shortcutList" :data-index="index" class="item"
+        <li v-for="(item, index) in shortcutList" :key="index" :data-index="index" class="item"
             :class="{'current':currentIndex===index}">{{item}}
         </li>
       </ul>
@@ -27,6 +35,8 @@
     <div class="list-fixed" ref="fixed" v-show="fixedTitle">
       <div class="fixed-title">{{fixedTitle}} </div>
     </div>
+
+    <!-- 友好提示 -->
     <div v-show="!data.length" class="loading-container">
       <loading></loading>
     </div>
@@ -34,8 +44,11 @@
 </template>
 
 <script type="text/ecmascript-6">
+  // BS插件为主体的通用组件
   import Scroll from 'base/scroll/scroll'
+  // 友好显示组件
   import Loading from 'base/loading/loading'
+  // 数据获取
   import {getData} from 'common/js/dom'
 
   const TITLE_HEIGHT = 30
@@ -49,6 +62,7 @@
       }
     },
     computed: {
+      // 首字母列表
       shortcutList() {
         return this.data.map((group) => {
           return group.title.substr(0, 1)
@@ -75,23 +89,27 @@
       this.listHeight = []
     },
     methods: {
+      // 事件抛出，父级组件接收，控制跳转
       selectItem(item) {
         this.$emit('select', item)
       },
+      // 右侧字母列表触摸开始
       onShortcutTouchStart(e) {
+        // 获取当前索引
         let anchorIndex = getData(e.target, 'index')
         let firstTouch = e.touches[0]
         this.touch.y1 = firstTouch.pageY
         this.touch.anchorIndex = anchorIndex
-
+        // 使用 BS 的 scrollToElement
         this._scrollTo(anchorIndex)
       },
+      // 右侧字母列表触摸运动
       onShortcutTouchMove(e) {
         let firstTouch = e.touches[0]
         this.touch.y2 = firstTouch.pageY
         let delta = (this.touch.y2 - this.touch.y1) / ANCHOR_HEIGHT | 0
         let anchorIndex = parseInt(this.touch.anchorIndex) + delta
-
+        // 使用 BS 的 scrollToElement
         this._scrollTo(anchorIndex)
       },
       refresh() {
@@ -112,14 +130,17 @@
         }
       },
       _scrollTo(index) {
+        // 避免误触
         if (!index && index !== 0) {
           return
         }
+        // 边界范围
         if (index < 0) {
           index = 0
         } else if (index > this.listHeight.length - 2) {
           index = this.listHeight.length - 2
         }
+        // BS 插件方法
         this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
         this.scrollY = this.$refs.listview.scroll.y
       }
