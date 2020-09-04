@@ -1,11 +1,14 @@
 <template>
   <div class="search">
+    <!-- 搜索框 -->
     <div class="search-box-wrapper">
       <search-box ref="searchBox" @query="onQueryChange"></search-box>
     </div>
+    <!-- 搜索结果展示列表 -->
     <div ref="shortcutWrapper" class="shortcut-wrapper" v-show="!query">
       <scroll :refreshDelay="refreshDelay" ref="shortcut" class="shortcut" :data="shortcut">
         <div>
+          <!-- 热门搜索 -->
           <div class="hot-key">
             <h1 class="title">热门搜索</h1>
             <ul>
@@ -14,6 +17,7 @@
               </li>
             </ul>
           </div>
+          <!-- 搜索历史 -->
           <div class="search-history" v-show="searchHistory.length">
             <h1 class="title">
               <span class="text">搜索历史</span>
@@ -21,14 +25,17 @@
                 <i class="icon-clear"></i>
               </span>
             </h1>
+            <!-- 搜索列表 -->
             <search-list @delete="deleteSearchHistory" @select="addQuery" :searches="searchHistory"></search-list>
           </div>
         </div>
       </scroll>
     </div>
+    <!-- 建议 -->
     <div class="search-result" v-show="query" ref="searchResult">
       <suggest @listScroll="blurInput" @select="saveSearch" ref="suggest" :query="query"></suggest>
     </div>
+    <!-- 确认清空 -->
     <confirm ref="confirm" @confirm="clearSearchHistory" text="是否清空所有搜索历史" confirmBtnText="清空"></confirm>
     <router-view></router-view>
   </div>

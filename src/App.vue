@@ -7,7 +7,7 @@
     <keep-alive>
       <router-view></router-view>
     </keep-alive>
-    <!-- 音乐播放界面 -->
+    <!-- 音乐播放工具栏 -->
     <player></player>
   </div>
 </template>
