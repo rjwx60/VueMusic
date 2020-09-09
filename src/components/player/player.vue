@@ -1,40 +1,53 @@
 <template>
+  <!-- 通过 vuex 控制的 playList 控制呈现与消失 -->
   <div class="player" v-show="playlist.length>0">
+    <!-- 过渡效果 -->
     <transition name="normal"
                 @enter="enter"
                 @after-enter="afterEnter"
                 @leave="leave"
                 @after-leave="afterLeave"
     >
+      <!-- 大播放器 -->
       <div class="normal-player" v-show="fullScreen">
+        <!-- 背景虚拟化 -->
         <div class="background">
           <img width="100%" height="100%" :src="currentSong.image">
         </div>
+        <!-- 标题栏 -->
         <div class="top">
+          <!-- 调用 Vuex 方法 setFullScreen 控制大小播放器切换 -->
           <div class="back" @click="back">
             <i class="icon-back"></i>
           </div>
           <h1 class="title" v-html="currentSong.name"></h1>
           <h2 class="subtitle" v-html="currentSong.singer"></h2>
         </div>
+
+        <!-- 中间 -->
+        <!-- 通过 touch 事件的移动距离，控制当前内容隐去，歌词列表内容显起，相反亦然 -->
         <div class="middle"
              @touchstart.prevent="middleTouchStart"
              @touchmove.prevent="middleTouchMove"
-             @touchend="middleTouchEnd"
-        >
+             @touchend="middleTouchEnd">
           <div class="middle-l" ref="middleL">
             <div class="cd-wrapper" ref="cdWrapper">
               <div class="cd" ref="imageWrapper">
+                <!-- 旋转唱碟效果的圆图 -->
                 <img ref="image" :class="cdCls" class="image" :src="currentSong.image">
               </div>
             </div>
             <div class="playing-lyric-wrapper">
+              <!-- 当前歌词 -->
               <div class="playing-lyric">{{playingLyric}}</div>
             </div>
           </div>
+
+          <!-- 歌词列表 — BS 使用 -->
           <scroll class="middle-r" ref="lyricList" :data="currentLyric && currentLyric.lines">
             <div class="lyric-wrapper">
               <div v-if="currentLyric">
+                <!-- 通过 BS 组件实现滚动 -->
                 <p ref="lyricLine"
                    class="text"
                    :class="{'current': currentLineNum ===index}"
@@ -46,14 +59,19 @@
             </div>
           </scroll>
         </div>
+
+        <!-- 底部栏 -->
         <div class="bottom">
+          <!-- 歌词与唱碟页的点切换 -->
           <div class="dot-wrapper">
             <span class="dot" :class="{'active':currentShow==='cd'}"></span>
             <span class="dot" :class="{'active':currentShow==='lyric'}"></span>
           </div>
+          <!-- 进度条 -->
           <div class="progress-wrapper">
             <span class="time time-l">{{format(currentTime)}}</span>
             <div class="progress-bar-wrapper">
+              <!-- 传入百分比，返回进度条控制数据，逻辑处理，歌单反映 -->
               <progress-bar ref="progressBar" :percent="percent" @percentChange="onProgressBarChange"
                             @percentChanging="onProgressBarChanging"></progress-bar>
             </div>
@@ -79,9 +97,12 @@
         </div>
       </div>
     </transition>
+
+    <!-- 迷你播放器 -->
     <transition name="mini">
       <div class="mini-player" v-show="!fullScreen" @click="open">
         <div class="icon">
+          <!-- 样式类控制效果 -->
           <div class="imgWrapper" ref="miniWrapper">
             <img ref="miniImage" :class="cdCls" width="40" height="40" :src="currentSong.image">
           </div>
@@ -90,7 +111,9 @@
           <h2 class="name" v-html="currentSong.name"></h2>
           <p class="desc" v-html="currentSong.singer"></p>
         </div>
+        <!-- 圆形进度条 -->
         <div class="control">
+          <!-- 传入当前进度 svg 控制 -->
           <progress-circle :radius="radius" :percent="percent">
             <i @click.stop="togglePlaying" class="icon-mini" :class="miniIcon"></i>
           </progress-circle>
@@ -100,6 +123,8 @@
         </div>
       </div>
     </transition>
+
+
     <playlist ref="playlist"></playlist>
     <audio ref="audio" @playing="ready" @error="error" @timeupdate="updateTime"
            @ended="end" @pause="paused"></audio>
@@ -113,6 +138,8 @@
   import ProgressBar from 'base/progress-bar/progress-bar'
   import ProgressCircle from 'base/progress-circle/progress-circle'
   import { playMode } from 'common/js/config'
+
+  // 歌词控制插件 lyric-parser
   import Lyric from 'lyric-parser'
   import Scroll from 'base/scroll/scroll'
   import { playerMixin } from 'common/js/mixin'
@@ -326,7 +353,9 @@
           if (this.currentSong.lyric !== lyric) {
             return
           }
+          // 歌单列表实例
           this.currentLyric = new Lyric(lyric, this.handleLyric)
+          console.log('this.currentLyric: ', this.currentLyric);
           this.isPureMusic = !this.currentLyric.lines.length
           if (this.isPureMusic) {
             this.pureMusicLyric = this.currentLyric.lrc.replace(timeExp, '').trim()
@@ -360,6 +389,7 @@
         this.$refs.playlist.show()
       },
       middleTouchStart(e) {
+        // flag 处理
         this.touch.initiated = true
         // 用来判断是否是一次移动
         this.touch.moved = false
