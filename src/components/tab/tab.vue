@@ -13,11 +13,31 @@
     <router-link tag="div" class="tab-item" to="/search">
       <span class="tab-link">搜索</span>
     </router-link>
+    <!-- <div @click="test">send Msg</div> -->
   </div>
 </template>
 
+
 <script type="text/ecmascript-6">
-  export default {}
+  import { subscriptions, mapObservers } from '../../observer';
+  export default {
+    methods: {
+      test() {
+        // let root = null;
+        // root = this.$parent;
+        // while(root.$parent) {
+        //   root = root.$parent;
+        // }
+        // root.$observables.msg.next('Tab Msg')
+        // console.log('root.$observables: ', root.$observables);
+        // mapObservers(this, [
+        //   'msg',
+        //   'MSG'
+        // ]);
+        this.msg.next('Tab msg');
+      }
+    }
+  }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">

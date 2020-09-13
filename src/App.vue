@@ -17,7 +17,29 @@
   import Player from 'components/player/player'
   import Tab from 'components/tab/tab'
 
+  import { subscriptions } from './observer';
+
+
   export default {
+    // subscriptions() {
+    //   return {
+    //     msg: new Subject()
+    //   }
+    // },
+
+    mounted() {
+      // let root = null;
+      // root = this.$parent;
+      // while(root.$parent) {
+      //   root = root.$parent;
+      // }
+      // root.$observables.msg.subscribe(msg => {
+      //   console.log('I got msg at App.vue: ', msg);
+      // })
+      // subscriptions.msg.subscribe(msg => {
+      //   console.log('I got msg at App.vue: ', msg);
+      // })
+    },
     components: {
       MHeader,
       Tab,

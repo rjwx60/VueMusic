@@ -23,6 +23,10 @@ import { SET_PLAY_HISTORY, SET_FAVORITE_LIST } from './store/mutation-types'
 import { loadPlay, loadFavorite } from 'common/js/cache'
 import { processSongsUrl } from 'common/js/song'
 
+// vue-rx & rxjs
+import VueRx from 'vue-rx';
+import { subscriptions } from './observer';
+
 // css style
 import 'common/stylus/index.styl'
 
@@ -31,6 +35,9 @@ import 'common/stylus/index.styl'
 
 // 速度优化插件
 fastclick.attach(document.body)
+
+// Vue-Rxjs 插件
+Vue.use(VueRx);
 
 // 懒加载插件
 Vue.use(VueLazyload, {
@@ -57,5 +64,9 @@ new Vue({
   el: '#app',
   router,
   store,
+  subscriptions,
+  // subscriptions: {
+  //   msg: new Subject()
+  // },
   render: h => h(App)
 })

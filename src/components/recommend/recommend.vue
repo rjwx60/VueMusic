@@ -59,6 +59,8 @@
   // Vuex
   import {mapMutations} from 'vuex'
 
+  import { subscriptions } from '../../observer';
+
   export default {
     // mixins 将多个组件均用到的方法抽离
     // 此处是将多个组件用到的监听 playlist 方法抽离集中到 mixin 并用 vuex 管理
@@ -75,7 +77,20 @@
       // 获取推荐列表
       this._getRecommend()
       // 获取推荐的歌单列表
-      this._getDiscList()
+      this._getDiscList();
+
+      // vue-rx test
+      // let root = null;
+      // root = this.$parent;
+      // while(root.$parent) {
+      //   root = root.$parent;
+      // }
+      // root.$observables.msg.subscribe(msg => {
+      //   console.log('I got msg at Recommend.vue: ', msg);
+      // })
+      subscriptions.msg.subscribe(msg => {
+        console.log('I got msg at Recommend.vue: ', msg);
+      })
     },
     activated() {
       setTimeout(() => {
@@ -123,10 +138,10 @@
           }
         })
       },
-      // vuex
-      ...mapMutations({
-        setDisc: 'SET_DISC'
-      })
+      // // vuex
+      // ...mapMutations({
+      //   setDisc: 'SET_DISC'
+      // })
     },
     components: {
       Slider,
